@@ -15,30 +15,45 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # Build and push with better error handling
       - name: Build & Push Backend
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./backend
           push: true
           tags: gillnavi/dd-backend:latest
+          platforms: linux/amd64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Build & Push Frontend
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./frontend
           push: true
           tags: gillnavi/dd-frontend:latest
+          platforms: linux/amd64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Verify images were pushed correctly
+      - name: Verify Images
+        run: |
+          docker pull gillnavi/dd-backend:latest
+          docker pull gillnavi/dd-frontend:latest
+          docker inspect gillnavi/dd-backend:latest
+          docker inspect gillnavi/dd-frontend:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -46,7 +61,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup SSH
         run: |
@@ -58,6 +73,7 @@ jobs:
       - name: Deploy with Docker Compose
         run: |
           ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} "
+            # Create app directory if it doesn't exist
             if [ ! -d ~/app ]; then
               git clone https://github.com/navigill7/mean_deployment.git ~/app
             else
@@ -66,9 +82,30 @@ jobs:
 
             cd ~/app
 
-            # Pull latest images from Docker Hub
-            docker-compose pull
+            # Stop existing services
+            docker-compose down
 
-            # Rebuild and restart containers
-            docker-compose up -d --build
-          "
+            # Clean up old images to avoid conflicts
+            docker image prune -f
+
+            # Pull latest images with retry logic
+            for i in {1..3}; do
+              if docker-compose pull; then
+                break
+              else
+                echo 'Pull failed, retrying in 10 seconds...'
+                sleep 10
+              fi
+            done
+
+            # Verify images before starting
+            docker inspect gillnavi/dd-backend:latest
+            docker inspect gillnavi/dd-frontend:latest
+
+            # Start services
+            docker-compose up -d
+
+            # Check if all services are running
+            sleep 10
+            docker-compose ps
+          
