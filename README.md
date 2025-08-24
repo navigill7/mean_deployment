@@ -94,24 +94,27 @@ Restart containers with Docker Compose
 📸 Screenshots
 ✅ CI/CD Workflow Execution
 
-![alt text](image.png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/0301a178-37aa-443b-8b6b-b2cd14b5dab9" />
+
 
 🐳 Docker Images Pushed to Hub
 
-![alt text](image-1.png)
-
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/2051daee-9585-412b-b842-0a0cbd26a1b6" />
 
 
 🌍 Application UI
 
-![alt text](image-2.png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b6ae8413-5eab-4873-8e02-b86d247710b8" />
+
 
 ⚙️ Nginx & Infra Setup
 
-![alt text](image-3.png)
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d51fb202-7c67-4948-a6e3-8e7967da0bf7" />
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/4d94c78f-532c-4790-b9b0-c813a16cbd92" />
 
 
-![alt text](image-4.png)
 
 
 🛠️ Tech Stack
