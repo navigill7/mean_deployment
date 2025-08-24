@@ -8,7 +8,11 @@ app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: 'http://localhost:4200' }));
+app.use(cors({
+  origin: ['http://localhost:4200', 'http://http://13.218.174.183'],
+  methods: ['GET','POST','PUT','DELETE'],
+  credentials: true
+}));
 const db = require("./app/models");
 db.mongoose
   .connect(db.url, {
