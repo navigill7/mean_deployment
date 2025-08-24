@@ -48,6 +48,9 @@ jobs:
     needs: build-and-push
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -75,7 +78,7 @@ jobs:
             # Pull latest images
             docker-compose pull
 
-            # Start all containers (frontend uses http-server)
+            # Start all containers
             docker-compose up -d
 
             # Wait and check status
