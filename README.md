@@ -41,9 +41,9 @@ docker-compose up --build -d
 
 4️⃣ Access the application
 
-Frontend → http://http://13.218.174.183/
+Frontend → http://13.218.174.183/
 
-Backend API → http://http://13.218.174.183/api
+Backend API → http://13.218.174.183/api
 
 MongoDB → internal container (mongo)
 
