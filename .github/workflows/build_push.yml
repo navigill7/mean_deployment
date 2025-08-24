@@ -54,33 +54,27 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.EC2_SSH_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
       - name: Copy files to EC2
         run: |
-          scp -i ~/.ssh/id_rsa -r ./docker-compose.yml ubuntu@${{ secrets.EC2_HOST }}:~/app/
+          ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} "mkdir -p ~/app"
+          scp -i ~/.ssh/id_rsa ./docker-compose.yml ubuntu@${{ secrets.EC2_HOST }}:~/app/
           scp -i ~/.ssh/id_rsa -r ./nginx/ ubuntu@${{ secrets.EC2_HOST }}:~/app/ || true
 
       - name: Deploy Application
         run: |
           ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
             cd ~/app
-            
-            # Stop existing services
+
             docker-compose down || true
-            
-            # Clean up old images
             docker image prune -f || true
-            
-            # Pull latest images
+
             docker-compose pull
-            
-            # Start services
             docker-compose up -d
-            
-            # Wait and check status
+
             sleep 15
             docker-compose ps
           EOF
