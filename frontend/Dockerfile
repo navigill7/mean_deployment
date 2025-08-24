@@ -7,17 +7,20 @@ RUN npm ci
 COPY . .
 RUN npm run build --prod
 
-# Stage 2: Serve Angular with http-server
-FROM node:18-alpine
+# Stage 2: Serve Angular with Nginx
+FROM nginx:alpine
 
-WORKDIR /app
-COPY --from=build /app/dist/angular-15-crud ./
+# Remove default Nginx website
+RUN rm -rf /usr/share/nginx/html/*
 
-# Install http-server globally
-RUN npm install -g http-server
+# Copy built Angular files to Nginx html folder
+COPY --from=build /app/dist/angular-15-crud /usr/share/nginx/html
 
-# Expose port 4200
-EXPOSE 4200
+# Copy custom Nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Start the Angular app
-CMD ["http-server", "-p", "4200", "-c-1"]
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]

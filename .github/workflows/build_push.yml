@@ -64,6 +64,7 @@ jobs:
           ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} "mkdir -p ~/app"
           scp -i ~/.ssh/id_rsa ./docker-compose.yml ubuntu@${{ secrets.EC2_HOST }}:~/app/
           scp -i ~/.ssh/id_rsa -r ./nginx/ ubuntu@${{ secrets.EC2_HOST }}:~/app/ || true
+          scp -i ~/.ssh/id_rsa -r ./frontend/dist/angular-15-crud ubuntu@${{ secrets.EC2_HOST }}:~/app/dist/ || true
 
       - name: Deploy Application
         run: |
@@ -79,8 +80,8 @@ jobs:
             # Pull latest images
             docker-compose pull
 
-            # Start all containers
-            docker-compose up -d
+            # Build frontend (optional) and start all containers
+            docker-compose up -d --build
 
             # Wait and check status
             sleep 15
