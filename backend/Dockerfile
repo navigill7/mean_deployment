@@ -8,7 +8,6 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
