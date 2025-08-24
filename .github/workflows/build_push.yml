@@ -9,6 +9,7 @@ on:
       - 'frontend/**'
       - 'docker-compose.yml'
       - 'nginx/**'
+      - '.github/workflows/**'
 
 jobs:
   build-and-push:
