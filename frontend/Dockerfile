@@ -7,20 +7,17 @@ RUN npm ci
 COPY . .
 RUN npm run build --prod
 
-# Stage 2: Serve Angular with Nginx
+# Stage 2: Serve with Nginx
 FROM nginx:alpine
 
-# Remove default Nginx website
+# Remove default Nginx HTML
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copy built Angular files to Nginx html folder
+# Copy Angular build output
 COPY --from=build /app/dist/angular-15-crud /usr/share/nginx/html
 
 # Copy custom Nginx config
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 80
 EXPOSE 80
-
-# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
