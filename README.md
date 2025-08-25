@@ -93,6 +93,12 @@ Restart containers with Docker Compose
 
 
 📸 Screenshots
+
+✅ App is working correctly 
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/fb1e251a-6341-4998-936e-672a91847900" />
+
+
 ✅ CI/CD Workflow Execution
 
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/0301a178-37aa-443b-8b6b-b2cd14b5dab9" />
