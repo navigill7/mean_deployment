@@ -20,7 +20,7 @@ services:
       - mongo
 
   frontend:
-    build: ./frontend
+    image: gillnavi/dd-frontend:latest
     container_name: frontend
     restart: always
     expose:
@@ -43,4 +43,4 @@ services:
 volumes:
   mongo-data:
 
-  
+
